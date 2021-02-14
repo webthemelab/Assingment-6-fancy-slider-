@@ -19,8 +19,8 @@ document.getElementById("search").addEventListener("keypress", function (event){
   if(event.key === 'Enter'){
       document.getElementById("search-btn").click();
   }
-})
-  
+ })
+
 
 // show images 
 const showImages = (images) => {
@@ -33,12 +33,16 @@ const showImages = (images) => {
     div.className = 'col-lg-3 col-md-4 col-xs-6 img-item mb-2';
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div)
+
+    
   })
 
 }
 
 const getImages = (query) => {
-  fetch(`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`)
+  
+  const url =`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`
+   fetch(url)
     .then(response => response.json())
     .then(data => showImages(data.hits))
     .catch(err => console.log(err))
@@ -50,19 +54,15 @@ const selectItem = (event, img) => {
   element.classList.add('added');
  
   let item = sliders.indexOf(img);
-  if (item == -1) {
+  if (item === -1) {
     sliders.push(img);
   } else {
-    alert('Hey, Already added !')
+    sliders.splice(item); 
+    element.classList.remove('added');
   }
 }
 
-// function switchIt() {
-//   if (document.getElementById("check").checked !== "checked") {
-//     document.getElementById("check").checked = "checked";
-//   } else {
-//     document.getElementById("check").checked = "";
-//   }
+   
 
 var timer
 const createSlider = () => {
@@ -95,8 +95,10 @@ const createSlider = () => {
   })
   changeSlide(0)
   timer = setInterval(function () {
-    slideIndex++;
-    changeSlide(slideIndex);
+    if (duration>=1000) {
+      slideIndex++;
+      changeSlide(slideIndex);
+    }
   }, duration);
 }
 
@@ -132,8 +134,23 @@ searchBtn.addEventListener('click', function () {
   const search = document.getElementById('search');
   getImages(search.value)
   sliders.length = 0;
-})
+ })
 
 sliderBtn.addEventListener('click', function () {
   createSlider()
+
+  
+
 })
+
+
+// const toggleSpinner = (show) =>{
+//   const spinnerItem =document.getElementById('loading-spinner');
+//   if (show){
+//     spinnerItem.classList.remove('d-none');
+//   }
+//   else{
+//     spinnerItem.classList.add('d-none');
+//   }
+  
+// }

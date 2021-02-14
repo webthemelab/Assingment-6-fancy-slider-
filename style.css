@@ -1,3 +1,12 @@
+#loading-spinner{
+  display: flex;
+  justify-content: center;
+}
+
+/* .spinner{
+  display: none;
+} */
+
 #sliders {
   height: 400px;
   width: 60%;
