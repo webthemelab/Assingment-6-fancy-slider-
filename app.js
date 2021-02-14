@@ -13,13 +13,25 @@ let sliders = [];
 // to create your own api key
 const KEY = '15674931-a9d714b6e9d654524df198e00&q';
 
+
 //Enter search
 
-document.getElementById("search").addEventListener("keypress", function (event){
-  if(event.key === 'Enter'){
-      document.getElementById("search-btn").click();
+document.getElementById("search").addEventListener("keypress", function (event) {
+  if (event.key === 'Enter') {
+    document.getElementById("search-btn").click();
   }
- })
+})
+
+
+const getImages = (query) => {
+
+  const url = `https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`
+  toggleSpinner(true);
+  fetch(url)
+    .then(response => response.json())
+    .then(data => showImages(data.hits))
+    .catch(err => console.log(err))
+}
 
 
 // show images 
@@ -34,35 +46,26 @@ const showImages = (images) => {
     div.innerHTML = ` <img class="img-fluid img-thumbnail" onclick=selectItem(event,"${image.webformatURL}") src="${image.webformatURL}" alt="${image.tags}">`;
     gallery.appendChild(div)
 
-    
+    toggleSpinner(false);
+
   })
 
 }
-
-const getImages = (query) => {
-  
-  const url =`https://pixabay.com/api/?key=${KEY}=${query}&image_type=photo&pretty=true`
-   fetch(url)
-    .then(response => response.json())
-    .then(data => showImages(data.hits))
-    .catch(err => console.log(err))
-}
-
 let slideIndex = 0;
 const selectItem = (event, img) => {
   let element = event.target;
   element.classList.add('added');
- 
+
   let item = sliders.indexOf(img);
   if (item === -1) {
     sliders.push(img);
   } else {
-    sliders.splice(item); 
+    sliders.splice(item, 1);
     element.classList.remove('added');
   }
 }
 
-   
+
 
 var timer
 const createSlider = () => {
@@ -92,10 +95,12 @@ const createSlider = () => {
     src="${slide}"
     alt="">`;
     sliderContainer.appendChild(item)
+
+
   })
   changeSlide(0)
   timer = setInterval(function () {
-    if (duration>=1000) {
+    if (duration >= 1000) {
       slideIndex++;
       changeSlide(slideIndex);
     }
@@ -128,29 +133,29 @@ const changeSlide = (index) => {
   items[index].style.display = "block"
 }
 
+
 searchBtn.addEventListener('click', function () {
   document.querySelector('.main').style.display = 'none';
   clearInterval(timer);
   const search = document.getElementById('search');
   getImages(search.value)
   sliders.length = 0;
- })
+})
 
 sliderBtn.addEventListener('click', function () {
   createSlider()
 
-  
+
 
 })
 
 
-// const toggleSpinner = (show) =>{
-//   const spinnerItem =document.getElementById('loading-spinner');
-//   if (show){
-//     spinnerItem.classList.remove('d-none');
-//   }
-//   else{
-//     spinnerItem.classList.add('d-none');
-//   }
-  
-// }
+const toggleSpinner = (show) => {
+  const spinner = document.getElementById('loading-spinner');
+  if (show) {
+    spinner.classList.remove('d-none');
+  }
+  else {
+    spinner.classList.add('d-none');
+  }
+}
